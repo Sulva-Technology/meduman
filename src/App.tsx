@@ -72,7 +72,7 @@ const MedumanLogo = ({
     <img
       src={strokeColor ? MEDUMAN_LOGOS.black : MEDUMAN_LOGOS[variant]}
       alt="Meduman logo"
-      className={`${className} object-contain select-none`}
+      className={`${className} rounded-[50%] object-contain select-none`}
       draggable={false}
     />
   );

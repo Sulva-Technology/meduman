@@ -241,7 +241,7 @@ export default function MedumanPreloader({
             src={logoSrc}
             alt="Meduman logo"
             draggable={false}
-            className={`w-full h-full object-contain select-none transition-transform duration-500 ${
+            className={`w-full h-full rounded-[50%] object-contain select-none transition-transform duration-500 ${
               prefersReducedMotion ? '' : 'animate-logo-scale'
             }`}
           />
