@@ -47,8 +47,18 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-// Premium SVG logo mark that represents secure escrow:
-// Two stakeholders connected by a beautiful double-headed circular escrow 'S' flow.
+const MEDUMAN_LOGOS = {
+  black: '/brand/meduman-logo-black.png',
+  navy: '/brand/meduman-logo-classic-indigo.png',
+  dark: '/brand/meduman-logo-slate-navy.png',
+  royal: '/brand/meduman-logo-escrow-royal.png',
+  'light-on-dark': '/brand/meduman-logo-sovereign-dark.png',
+  white: '/brand/meduman-logo-sovereign-dark.png',
+  'two-tone': '/brand/meduman-logo-slate-navy.png'
+} as const;
+
+type MedumanLogoVariant = keyof typeof MEDUMAN_LOGOS;
+
 const MedumanLogo = ({
   className = "h-8 w-8",
   strokeColor,
@@ -56,119 +66,29 @@ const MedumanLogo = ({
 }: {
   className?: string;
   strokeColor?: string;
-  variant?: 'navy' | 'dark' | 'royal' | 'light-on-dark' | 'white' | 'two-tone';
+  variant?: MedumanLogoVariant;
 }) => {
-  let primaryColor = "#22306E";   // S-loop
-  let secondaryColor = "#22306E"; // Heads/Pillars
-
-  if (strokeColor) {
-    primaryColor = strokeColor;
-    secondaryColor = strokeColor;
-  } else {
-    switch (variant) {
-      case 'navy':
-        primaryColor = "#0E0C5B";
-        secondaryColor = "#0E0C5B";
-        break;
-      case 'dark':
-        primaryColor = "#071635";
-        secondaryColor = "#071635";
-        break;
-      case 'royal':
-        primaryColor = "#22306E";
-        secondaryColor = "#22306E";
-        break;
-      case 'light-on-dark':
-        primaryColor = "#233392";
-        secondaryColor = "#233392";
-        break;
-      case 'white':
-        primaryColor = "#FFFFFF";
-        secondaryColor = "#FFFFFF";
-        break;
-      case 'two-tone':
-        primaryColor = "#22306E"; // S-loop in Royal Blue
-        secondaryColor = "#071635"; // Pillars/Heads in Slate Navy
-        break;
-    }
-  }
-
   return (
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      {/* Left Head */}
-      <circle cx="24" cy="28" r="9.5" fill={secondaryColor} />
-      
-      {/* Right Head */}
-      <circle cx="76" cy="28" r="9.5" fill={secondaryColor} />
-      
-      {/* Left Stakeholder Pillar & Arm */}
-      <path
-        d="M24 76V42C24 37.5 26 36 30 37.5L41.5 48.5"
-        stroke={secondaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      
-      {/* Right Stakeholder Pillar & Arm */}
-      <path
-        d="M76 76V42C76 37.5 74 36 70 37.5L58.5 48.5"
-        stroke={secondaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* Interlocking S-Loop (Top Segment, clockwise flow) */}
-      <path
-        d="M41.5 48.5C41.5 41.5 46.5 36 53 36C59.5 36 63 42 59.5 47.5C58 50 54.5 51 52.5 49.5"
-        stroke={primaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      
-      {/* Top Segment Arrowhead */}
-      <path
-        d="M51.5 44L52.5 49.5L58 49.5"
-        stroke={primaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* Interlocking S-Loop (Bottom Segment, clockwise flow) */}
-      <path
-        d="M58.5 48.5C58.5 55.5 53.5 61 47 61C40.5 61 37 55 40.5 49.5C42 47 45.5 46 47.5 47.5"
-        stroke={primaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* Bottom Segment Arrowhead */}
-      <path
-        d="M48.5 53L47.5 47.5L42 47.5"
-        stroke={primaryColor}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <img
+      src={strokeColor ? MEDUMAN_LOGOS.black : MEDUMAN_LOGOS[variant]}
+      alt="Meduman logo"
+      className={`${className} object-contain select-none`}
+      draggable={false}
+    />
   );
 };
 
-const getLogoSVG = (primaryColor: string, secondaryColor: string) => {
-  return `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="24" cy="28" r="9.5" fill="${secondaryColor}" />
-  <circle cx="76" cy="28" r="9.5" fill="${secondaryColor}" />
-  <path d="M24 76V42C24 37.5 26 36 30 37.5L41.5 48.5" stroke="${secondaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M76 76V42C76 37.5 74 36 70 37.5L58.5 48.5" stroke="${secondaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M41.5 48.5C41.5 41.5 46.5 36 53 36C59.5 36 63 42 59.5 47.5C58 50 54.5 51 52.5 49.5" stroke="${primaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M51.5 44L52.5 49.5L58 49.5" stroke="${primaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M58.5 48.5C58.5 55.5 53.5 61 47 61C40.5 61 37 55 40.5 49.5C42 47 45.5 46 47.5 47.5" stroke="${primaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M48.5 53L47.5 47.5L42 47.5" stroke="${primaryColor}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`;
+const getLogoUrl = (variant: MedumanLogoVariant) => {
+  return `${window.location.origin}${MEDUMAN_LOGOS[variant]}`;
+};
+
+const downloadLogo = (variant: MedumanLogoVariant, filename: string) => {
+  const link = document.createElement('a');
+  link.href = MEDUMAN_LOGOS[variant];
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 export default function App() {
@@ -2436,9 +2356,53 @@ export default function App() {
                 <p className="text-xs text-gray-500">Select, copy, or download the exact variation that fits your layout.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 
-                {/* Variant 1: Classic Indigo */}
+                {/* Variant 1: Monochrome Black */}
+                <div className="bg-white border border-gray-200/60 rounded-3xl p-5 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
+                  <div className="space-y-4">
+                    <div className="h-44 w-full bg-white rounded-2xl flex items-center justify-center border border-gray-150/50 relative overflow-hidden group">
+                      <MedumanLogo className="w-20 h-20 transition-transform duration-300 group-hover:scale-110" variant="black" />
+                      <span className="absolute top-2 left-2 text-[8px] font-bold uppercase tracking-wider bg-white/90 border border-gray-200 px-2 py-0.5 rounded-full text-black">Mono Mark</span>
+                    </div>
+                    <div className="text-left space-y-1">
+                      <h4 className="text-xs font-bold text-[#071635]">Monochrome Black</h4>
+                      <p className="text-[10px] text-gray-500 leading-normal">
+                        A strict black mark for legal documents, simple print use, and high-contrast neutral placements.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-[10px] border-t border-b border-gray-100 py-2">
+                      <span className="text-gray-400">Tone:</span>
+                      <span className="font-mono font-bold text-black">BLACK</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(getLogoUrl('black'));
+                          showToast('Monochrome Black logo URL copied to clipboard');
+                        }}
+                        className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span>Copy</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          downloadLogo('black', 'meduman-logo-black.png');
+                          showToast('Downloaded meduman-logo-black.png');
+                        }}
+                        className="bg-[#22306E] hover:bg-[#071635] text-white py-2 px-3 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
+                        title="Download PNG"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Variant 2: Classic Indigo */}
                 <div className="bg-white border border-gray-200/60 rounded-3xl p-5 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                   <div className="space-y-4">
                     <div className="h-44 w-full bg-[#F7F7F7] rounded-2xl flex items-center justify-center border border-gray-150/50 relative overflow-hidden group">
@@ -2460,8 +2424,8 @@ export default function App() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(getLogoSVG('#0E0C5B', '#0E0C5B'));
-                          showToast('Classic Indigo SVG copied to clipboard');
+                          navigator.clipboard.writeText(getLogoUrl('navy'));
+                          showToast('Classic Indigo logo URL copied to clipboard');
                         }}
                         className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                       >
@@ -2470,20 +2434,11 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => {
-                          const svgStr = getLogoSVG('#0E0C5B', '#0E0C5B');
-                          const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-                          const url = URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.download = 'meduman-logo-classic-indigo.svg';
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          URL.revokeObjectURL(url);
-                          showToast('Downloaded meduman-logo-classic-indigo.svg');
+                          downloadLogo('navy', 'meduman-logo-classic-indigo.png');
+                          showToast('Downloaded meduman-logo-classic-indigo.png');
                         }}
                         className="bg-[#22306E] hover:bg-[#071635] text-white py-2 px-3 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
-                        title="Download SVG"
+                        title="Download PNG"
                       >
                         <Download className="h-3.5 w-3.5" />
                       </button>
@@ -2491,7 +2446,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Variant 2: Slate Navy */}
+                {/* Variant 3: Slate Navy */}
                 <div className="bg-white border border-gray-200/60 rounded-3xl p-5 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                   <div className="space-y-4">
                     <div className="h-44 w-full bg-white rounded-2xl flex items-center justify-center border border-gray-150/50 relative overflow-hidden group">
@@ -2513,8 +2468,8 @@ export default function App() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(getLogoSVG('#071635', '#071635'));
-                          showToast('Slate Navy SVG copied to clipboard');
+                          navigator.clipboard.writeText(getLogoUrl('dark'));
+                          showToast('Slate Navy logo URL copied to clipboard');
                         }}
                         className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                       >
@@ -2523,20 +2478,11 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => {
-                          const svgStr = getLogoSVG('#071635', '#071635');
-                          const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-                          const url = URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.download = 'meduman-logo-slate-navy.svg';
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          URL.revokeObjectURL(url);
-                          showToast('Downloaded meduman-logo-slate-navy.svg');
+                          downloadLogo('dark', 'meduman-logo-slate-navy.png');
+                          showToast('Downloaded meduman-logo-slate-navy.png');
                         }}
                         className="bg-[#22306E] hover:bg-[#071635] text-white py-2 px-3 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
-                        title="Download SVG"
+                        title="Download PNG"
                       >
                         <Download className="h-3.5 w-3.5" />
                       </button>
@@ -2544,7 +2490,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Variant 3: Escrow Royal Blue */}
+                {/* Variant 4: Escrow Royal Blue */}
                 <div className="bg-white border border-gray-200/60 rounded-3xl p-5 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                   <div className="space-y-4">
                     <div className="h-44 w-full bg-white rounded-2xl flex items-center justify-center border border-gray-150/50 relative overflow-hidden group">
@@ -2566,8 +2512,8 @@ export default function App() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(getLogoSVG('#22306E', '#22306E'));
-                          showToast('Escrow Royal SVG copied to clipboard');
+                          navigator.clipboard.writeText(getLogoUrl('royal'));
+                          showToast('Escrow Royal logo URL copied to clipboard');
                         }}
                         className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                       >
@@ -2576,20 +2522,11 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => {
-                          const svgStr = getLogoSVG('#22306E', '#22306E');
-                          const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-                          const url = URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.download = 'meduman-logo-escrow-royal.svg';
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          URL.revokeObjectURL(url);
-                          showToast('Downloaded meduman-logo-escrow-royal.svg');
+                          downloadLogo('royal', 'meduman-logo-escrow-royal.png');
+                          showToast('Downloaded meduman-logo-escrow-royal.png');
                         }}
                         className="bg-[#22306E] hover:bg-[#071635] text-white py-2 px-3 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
-                        title="Download SVG"
+                        title="Download PNG"
                       >
                         <Download className="h-3.5 w-3.5" />
                       </button>
@@ -2597,7 +2534,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Variant 4: Sovereign Dark */}
+                {/* Variant 5: Sovereign Dark */}
                 <div className="bg-white border border-gray-200/60 rounded-3xl p-5 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                   <div className="space-y-4">
                     <div className="h-44 w-full bg-[#0D0C52] rounded-2xl flex items-center justify-center border border-white/5 relative overflow-hidden group">
@@ -2619,8 +2556,8 @@ export default function App() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(getLogoSVG('#233392', '#233392'));
-                          showToast('Sovereign Dark SVG copied to clipboard');
+                          navigator.clipboard.writeText(getLogoUrl('light-on-dark'));
+                          showToast('Sovereign Dark logo URL copied to clipboard');
                         }}
                         className="flex-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                       >
@@ -2629,20 +2566,11 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => {
-                          const svgStr = getLogoSVG('#233392', '#233392');
-                          const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-                          const url = URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.download = 'meduman-logo-sovereign-dark.svg';
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          URL.revokeObjectURL(url);
-                          showToast('Downloaded meduman-logo-sovereign-dark.svg');
+                          downloadLogo('light-on-dark', 'meduman-logo-sovereign-dark.png');
+                          showToast('Downloaded meduman-logo-sovereign-dark.png');
                         }}
                         className="bg-[#22306E] hover:bg-[#071635] text-white py-2 px-3 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
-                        title="Download SVG"
+                        title="Download PNG"
                       >
                         <Download className="h-3.5 w-3.5" />
                       </button>

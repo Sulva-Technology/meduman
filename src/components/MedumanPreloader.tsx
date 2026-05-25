@@ -101,9 +101,9 @@ export default function MedumanPreloader({
 
   if (!isVisible) return null;
 
-  // Render variables corresponding to dark and light setups
-  const brandPrimary = isDark ? '#233392' : '#22306E';
-  const brandSecondary = isDark ? '#233392' : '#071635';
+  const logoSrc = isDark
+    ? '/brand/meduman-logo-sovereign-dark.png'
+    : '/brand/meduman-logo-slate-navy.png';
 
   return (
     <div
@@ -235,84 +235,16 @@ export default function MedumanPreloader({
           animation: prefersReducedMotion ? 'none' : 'cardEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards'
         }}
       >
-        {/* Animated Inline Meduman SVG Logo */}
+        {/* Official Meduman brand mark */}
         <div className="w-24 h-24 mb-7 relative flex items-center justify-center">
-          <svg
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={`w-full h-full transition-transform duration-500 overflow-visible ${
+          <img
+            src={logoSrc}
+            alt="Meduman logo"
+            draggable={false}
+            className={`w-full h-full object-contain select-none transition-transform duration-500 ${
               prefersReducedMotion ? '' : 'animate-logo-scale'
             }`}
-          >
-            {/* Left Head (Stable representing trust) */}
-            <circle cx="24" cy="28" r="9.5" fill={brandSecondary} />
-            
-            {/* Right Head (Stable representing trust) */}
-            <circle cx="76" cy="28" r="9.5" fill={brandSecondary} />
-            
-            {/* Left Stakeholder Pillar & Arm */}
-            <path
-              d="M24 76V42C24 37.5 26 36 30 37.5L41.5 48.5"
-              stroke={brandSecondary}
-              strokeWidth="11"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            
-            {/* Right Stakeholder Pillar & Arm */}
-            <path
-              d="M76 76V42C76 37.5 74 36 70 37.5L58.5 48.5"
-              stroke={brandSecondary}
-              strokeWidth="11"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* INTERLOCKING S-LOOP WITH DRAW PATTERNS */}
-            <g className={prefersReducedMotion ? '' : 'animate-draw-s'}>
-              {/* Top Segment, clockwise flow */}
-              <path
-                d="M41.5 48.5C41.5 41.5 46.5 36 53 36C59.5 36 63 42 59.5 47.5C58 50 54.5 51 52.5 49.5"
-                stroke={brandPrimary}
-                strokeWidth="11"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={prefersReducedMotion ? '' : 'animate-draw-s'}
-              />
-              
-              {/* Bottom Segment, clockwise flow */}
-              <path
-                d="M58.5 48.5C58.5 55.5 53.5 61 47 61C40.5 61 37 55 40.5 49.5C42 47 45.5 46 47.5 47.5"
-                stroke={brandPrimary}
-                strokeWidth="11"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={prefersReducedMotion ? '' : 'animate-draw-s'}
-              />
-            </g>
-
-            {/* ARROWHEADS PULSING */}
-            <g className={prefersReducedMotion ? '' : 'animate-arrow-pulse'}>
-              {/* Top Segment Arrowhead */}
-              <path
-                d="M51.5 44L52.5 49.5L58 49.5"
-                stroke={brandPrimary}
-                strokeWidth="11"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Bottom Segment Arrowhead */}
-              <path
-                d="M48.5 53L47.5 47.5L42 47.5"
-                stroke={brandPrimary}
-                strokeWidth="11"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          </svg>
+          />
         </div>
 
         {/* Loading Prompts */}
