@@ -384,20 +384,39 @@ export default function App() {
       const result = await submitWaitlistEntry(newEntry);
 
       // Add entry and clear form
-    setWaitlistEntries([newEntry, ...waitlistEntries]);
-    setWaitlistSuccessData(newEntry);
-    setWaitlistForm({
-      fullName: '',
-      email: '',
-      phone: '',
-      userType: 'Buyer',
-      mainChannel: 'WhatsApp',
-      country: 'Nigeria',
-      city: '',
-      useCase: '',
-      averageTransactionValue: 'Below ₦20,000',
-      consent: false
-    });
+      setWaitlistEntries([newEntry, ...waitlistEntries]);
+      setWaitlistSuccessData(newEntry);
+      setWaitlistForm({
+        fullName: '',
+        email: '',
+        phone: '',
+        userType: 'Buyer',
+        mainChannel: 'WhatsApp',
+        country: 'Nigeria',
+        city: '',
+        useCase: '',
+        averageTransactionValue: 'Below ₦20,000',
+        consent: false
+      });
+
+      // Dispatch waitlist confirmation email
+      try {
+        const mailResponse = await fetch('/api/send-waitlist-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEntry)
+        });
+        if (!mailResponse.ok) {
+          const errData = await mailResponse.json();
+          console.warn('[Email Warning] Failed to trigger waitlist email:', errData.error || mailResponse.statusText);
+        } else {
+          const resData = await mailResponse.json();
+          console.log('[Email Info] Waitlist email status:', resData);
+        }
+      } catch (emailErr) {
+        console.warn('[Email Warning] Network error trying to call send-waitlist-email api:', emailErr);
+      }
+
       showToast(
         result.storedRemotely
           ? `Access Confirmed! Profile stored under ID ${newId}`
@@ -460,15 +479,34 @@ export default function App() {
       const result = await submitWaitlistEntry(newEntry);
 
       // Add entry & complete
-    setWaitlistEntries([newEntry, ...waitlistEntries]);
-    setModalSuccess(true);
-    setModalForm({
-      fullName: '',
-      email: '',
-      userType: 'Buyer',
-      mainChannel: 'WhatsApp',
-      consent: false
-    });
+      setWaitlistEntries([newEntry, ...waitlistEntries]);
+      setModalSuccess(true);
+      setModalForm({
+        fullName: '',
+        email: '',
+        userType: 'Buyer',
+        mainChannel: 'WhatsApp',
+        consent: false
+      });
+
+      // Dispatch waitlist confirmation email
+      try {
+        const mailResponse = await fetch('/api/send-waitlist-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEntry)
+        });
+        if (!mailResponse.ok) {
+          const errData = await mailResponse.json();
+          console.warn('[Email Warning] Failed to trigger waitlist email:', errData.error || mailResponse.statusText);
+        } else {
+          const resData = await mailResponse.json();
+          console.log('[Email Info] Waitlist email status:', resData);
+        }
+      } catch (emailErr) {
+        console.warn('[Email Warning] Network error trying to call send-waitlist-email api:', emailErr);
+      }
+
       showToast(
         result.storedRemotely
           ? `Access Confirmed! Profile stored under ID ${newId}`
