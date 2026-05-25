@@ -15,6 +15,10 @@ View your app in AI Studio: https://ai.studio/apps/22b0789c-30f5-4f19-9ee5-f9c0b
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Copy `.env.example` to `.env.local` and set the Supabase waitlist variables if you want live waitlist writes
 3. Run the app:
    `npm run dev`
+
+## Supabase Waitlist
+
+Run the migration in `supabase/migrations/20260525143000_create_waitlist_entries.sql`, then set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Vercel. The table is protected with Row Level Security and allows public inserts only.

@@ -237,6 +237,8 @@ export default function App() {
   });
   const [modalValidationError, setModalValidationError] = useState<string | null>(null);
   const [modalSuccess, setModalSuccess] = useState(false);
+  const [isWaitlistSubmitting, setIsWaitlistSubmitting] = useState(false);
+  const [isModalSubmitting, setIsModalSubmitting] = useState(false);
 
   // Old email field preserved for internal layout compat / secondary bindings
   const [email, setEmail] = useState('');
@@ -333,7 +335,7 @@ export default function App() {
   };
 
   // Full robust waitlist form handler
-  const handleFullWaitlistSubmit = (e: React.FormEvent) => {
+  const handleFullWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setWaitlistValidationError(null);
 
@@ -376,7 +378,12 @@ export default function App() {
       createdAt: new Date().toISOString()
     };
 
-    // Add entry and clear form
+    try {
+      setIsWaitlistSubmitting(true);
+      const { submitWaitlistEntry } = await import('./lib/supabase');
+      const result = await submitWaitlistEntry(newEntry);
+
+      // Add entry and clear form
     setWaitlistEntries([newEntry, ...waitlistEntries]);
     setWaitlistSuccessData(newEntry);
     setWaitlistForm({
@@ -391,11 +398,20 @@ export default function App() {
       averageTransactionValue: 'Below ₦20,000',
       consent: false
     });
-    showToast(`Access Confirmed! Profile stored under ID ${newId}`);
+      showToast(
+        result.storedRemotely
+          ? `Access Confirmed! Profile stored under ID ${newId}`
+          : `Access Confirmed locally! Configure Supabase env vars to sync ID ${newId}`
+      );
+    } catch (error) {
+      setWaitlistValidationError(error instanceof Error ? error.message : 'Unable to save your waitlist profile right now.');
+    } finally {
+      setIsWaitlistSubmitting(false);
+    }
   };
 
   // Shorts / Quick waitlist modal form handler
-  const handleShortWaitlistSubmit = (e: React.FormEvent) => {
+  const handleShortWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setModalValidationError(null);
 
@@ -438,7 +454,12 @@ export default function App() {
       createdAt: new Date().toISOString()
     };
 
-    // Add entry & complete
+    try {
+      setIsModalSubmitting(true);
+      const { submitWaitlistEntry } = await import('./lib/supabase');
+      const result = await submitWaitlistEntry(newEntry);
+
+      // Add entry & complete
     setWaitlistEntries([newEntry, ...waitlistEntries]);
     setModalSuccess(true);
     setModalForm({
@@ -448,7 +469,16 @@ export default function App() {
       mainChannel: 'WhatsApp',
       consent: false
     });
-    showToast(`Access Confirmed! Profile stored under ID ${newId}`);
+      showToast(
+        result.storedRemotely
+          ? `Access Confirmed! Profile stored under ID ${newId}`
+          : `Access Confirmed locally! Configure Supabase env vars to sync ID ${newId}`
+      );
+    } catch (error) {
+      setModalValidationError(error instanceof Error ? error.message : 'Unable to save your waitlist profile right now.');
+    } finally {
+      setIsModalSubmitting(false);
+    }
   };
 
   const resetSimulator = () => {
@@ -1965,9 +1995,10 @@ export default function App() {
                   <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto bg-[#232F72] hover:bg-[#121358] text-white text-xs font-bold uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-transform inline-flex items-center justify-center space-x-2 cursor-pointer"
+                      disabled={isWaitlistSubmitting}
+                      className="w-full sm:w-auto bg-[#232F72] hover:bg-[#121358] disabled:bg-[#232F72]/60 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-transform inline-flex items-center justify-center space-x-2 cursor-pointer"
                     >
-                      <span>Secure Onboarding Position</span>
+                      <span>{isWaitlistSubmitting ? 'Securing Position...' : 'Secure Onboarding Position'}</span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
                     <button
@@ -3079,9 +3110,10 @@ export default function App() {
                   <div className="pt-2 flex items-center justify-between">
                     <button
                       type="submit"
-                      className="w-full bg-[#232F72] hover:bg-[#121358] text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                      disabled={isModalSubmitting}
+                      className="w-full bg-[#232F72] hover:bg-[#121358] disabled:bg-[#232F72]/60 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 cursor-pointer"
                     >
-                      <span>Secure Onboarding Card</span>
+                      <span>{isModalSubmitting ? 'Securing Card...' : 'Secure Onboarding Card'}</span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>

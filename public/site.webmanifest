@@ -1,0 +1,23 @@
+{
+  "name": "Meduman",
+  "short_name": "Meduman",
+  "description": "Secure escrow protection for social commerce transactions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F7F7",
+  "theme_color": "#071635",
+  "icons": [
+    {
+      "src": "/brand/meduman-logo-slate-navy.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/meduman-logo-escrow-royal.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#071635"/>
+  <circle cx="995" cy="105" r="210" fill="#233392" fill-opacity="0.36"/>
+  <circle cx="178" cy="520" r="260" fill="#22306E" fill-opacity="0.38"/>
+  <rect x="72" y="72" width="1056" height="486" rx="48" fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.14"/>
+  <image href="/brand/meduman-logo-sovereign-dark.png" x="112" y="154" width="280" height="280" preserveAspectRatio="xMidYMid meet"/>
+  <text x="430" y="238" fill="#FFFFFF" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-2">
+    Meduman
+  </text>
+  <text x="430" y="315" fill="#FFFFFF" fill-opacity="0.88" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="34" font-weight="700">
+    Secure escrow for social commerce.
+  </text>
+  <text x="430" y="378" fill="#FFFFFF" fill-opacity="0.68" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="24" font-weight="500">
+    Buyer protection. Seller confidence. DM-based deals with less risk.
+  </text>
+  <rect x="430" y="430" width="306" height="54" rx="27" fill="#233392"/>
+  <text x="462" y="465" fill="#FFFFFF" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="1.5">
+    JOIN THE WAITLIST
+  </text>
+</svg>
