@@ -1,0 +1,6 @@
+{
+  "name": "Meduman",
+  "description": "A premium transaction protection platform for social commerce in Africa. Meduman helps buyers and sellers transact safely by holding payments securely until delivery is confirmed.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
