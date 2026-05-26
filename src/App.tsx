@@ -93,7 +93,8 @@ const downloadLogo = (variant: MedumanLogoVariant, filename: string) => {
 
 export default function App() {
   // Navigation
-  const [currentPage, setCurrentPage] = useState<'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' | 'admin-waitlist' | 'brand-kit'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' >('home');
+  // | 'admin-waitlist' | 'brand-kit'
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
