@@ -528,7 +528,8 @@ export default function App() {
   };
 
   // Safe navigation helper
-  const navigateTo = (page: 'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' | 'admin-waitlist' | 'brand-kit') => {
+  const navigateTo = (page: 'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' ) => {
+    // | 'admin-waitlist' | 'brand-kit'
     setCurrentPage(page);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'instant' });
