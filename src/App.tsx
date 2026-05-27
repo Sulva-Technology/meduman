@@ -93,8 +93,7 @@ const downloadLogo = (variant: MedumanLogoVariant, filename: string) => {
 
 export default function App() {
   // Navigation
-  const [currentPage, setCurrentPage] = useState<'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' >('home');
-  // | 'admin-waitlist' | 'brand-kit'
+  const [currentPage, setCurrentPage] = useState<'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' | 'admin-waitlist' | 'brand-kit'>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -528,8 +527,7 @@ export default function App() {
   };
 
   // Safe navigation helper
-  const navigateTo = (page: 'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' ) => {
-    // | 'admin-waitlist' | 'brand-kit'
+  const navigateTo = (page: 'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' | 'admin-waitlist' | 'brand-kit') => {
     setCurrentPage(page);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -689,7 +687,7 @@ export default function App() {
               >
                 Security Protocol
               </button>
-              <button 
+              {/* <button 
                 onClick={() => navigateTo('admin-waitlist')} 
                 className={`text-sm font-bold text-[#121358] text-left py-2 border-b border-gray-100 ${currentPage === 'admin-waitlist' ? 'text-[#232F72]' : 'text-gray-400'}`}
               >
@@ -700,7 +698,7 @@ export default function App() {
                 className={`text-sm font-bold text-left py-2 border-b border-gray-100 ${currentPage === 'brand-kit' ? 'text-[#232F72]' : 'text-gray-500'}`}
               >
                 Brand Guidelines
-              </button>
+              </button> */}
             </div>
             <div className="flex flex-col gap-2 pt-2">
               <button 
