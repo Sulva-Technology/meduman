@@ -347,13 +347,28 @@ export interface SellerProfileSelfView {
 
 export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
 
-export interface Notification {
+export type NotificationChannel =
+  | 'EMAIL'
+  | 'SMS'
+  | 'PUSH'
+  | 'IN_APP'
+  | 'WHATSAPP'
+  | 'TELEGRAM'
+  | 'INSTAGRAM'
+  | 'MESSENGER';
+
+/**
+ * Exactly the projection `GET /notifications` selects — no more. The API has no
+ * title/body/link fields; display text is derived from `templateKey` + `payload`.
+ * `status` is delivery state (the outbound send); `readAt` is the in-app read
+ * receipt. They are independent.
+ */
+export interface NotificationView {
   id: string;
-  userId: string;
-  channel: 'EMAIL' | 'SMS' | 'PUSH';
+  channel: NotificationChannel;
   templateKey: string;
+  payload: Record<string, unknown> | null;
   status: NotificationStatus;
-  sentAt: string | null;
   readAt: string | null;
   createdAt: string;
 }

@@ -50,6 +50,18 @@ export function previewInvoiceTotals(
   return { subtotal, taxAmount, total: subtotal + taxAmount };
 }
 
+/**
+ * Format integer minor units (kobo) as Naira, for plain-string contexts where
+ * the `MoneyText` component can't be used. Matches its formatting exactly.
+ */
+export function formatMoney(amountInKobo: number): string {
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+  }).format(amountInKobo / 100);
+}
+
 /** Short human-readable reference derived from a server-owned uuid. */
 export function shortRef(id: string, prefix = 'TX'): string {
   return `${prefix}-${id.slice(0, 8).toUpperCase()}`;
