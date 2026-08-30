@@ -8,13 +8,54 @@
   --color-meduman-royal: #22306E;
   --color-meduman-dark: #0D0C52;
   --color-meduman-action: #233392;
+  
+  --color-canvas: var(--canvas);
+  --color-canvas-ink: var(--canvas-ink);
+  --color-surface: var(--surface);
+  --color-brand: var(--brand);
+  --color-brand-700: var(--brand-700);
+  --color-brand-050: var(--brand-050);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-success: var(--success);
+  --color-success-600: var(--success-600);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+}
+
+:root {
+  --canvas: #F7F7F7;
+  --canvas-ink: #081635;
+  --surface: #FFFFFF;
+  --brand: #232F72;
+  --brand-700: #1B2559;
+  --brand-050: #EEF0F7;
+  --ink: #0A0A0A;
+  --muted: #6B7280;
+  --line: #E7E8EE;
+  --success: #0E9E6E;
+  --success-600: #14B87F;
+  --warning: #E9A23B;
+  --danger: #EF4757;
+  --info: #232F72;
+}
+
+.dark {
+  --canvas: #081635; /* canvas-ink */
+  --surface: #0C142C;
+  --ink: #FFFFFF;
+  --muted: #9CA3AF;
+  --line: rgba(255, 255, 255, 0.1);
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #F7F7F7;
-  color: #000000;
+  font-family: var(--font-sans);
+  background-color: var(--canvas);
+  color: var(--ink);
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 
 @keyframes float {

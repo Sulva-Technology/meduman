@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
@@ -234,15 +234,15 @@ app.post('/api/send-waitlist-email', async (req, res) => {
   try {
     if (resend) {
       // Send using Resend
-      const data = await resend.emails.send({
+      const response = await resend.emails.send({
         from: smtpFrom,
         to: [cleanEmail],
         subject: 'You are on the Meduman Waitlist!',
         html: emailHtml
       });
 
-      console.log(`[Resend] Welcome email sent to ${cleanEmail}. Message ID:`, data);
-      return res.status(200).json({ success: true, provider: 'resend', messageId: data.id });
+      console.log(`[Resend] Welcome email sent to ${cleanEmail}. Message ID:`, response);
+      return res.status(200).json({ success: true, provider: 'resend', messageId: response.data?.id || 'resend-sent' });
     } else if (smtpTransporter) {
       // Send using standard SMTP
       const info = await smtpTransporter.sendMail({
@@ -293,6 +293,11 @@ app.get('*', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Meduman backend listening at http://localhost:${PORT}`);
-});
+if (process.argv[1] && (process.argv[1].endsWith('server.ts') || process.argv[1].endsWith('server.js'))) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Meduman backend listening at http://0.0.0.0:${PORT}`);
+  });
+}
+
+export default app;
+export { app };
