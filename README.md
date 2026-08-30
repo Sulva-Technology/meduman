@@ -19,6 +19,15 @@ View your app in AI Studio: https://ai.studio/apps/22b0789c-30f5-4f19-9ee5-f9c0b
 3. Run the app:
    `npm run dev`
 
+## Vercel routing
+
+`vercel.json` serves the Vite app for direct page visits such as `/login`,
+`/signup`, and `/app/transactions`, allowing React Router to handle them.
+Redeploy after changing this configuration. Existing static files remain served
+normally, and `/api` requests are excluded from the page fallback.
+Set `VITE_API_BASE_URL` to the deployed NestJS API origin in Vercel; the Vite
+development proxy does not run in production.
+
 ## Supabase Waitlist
 
 Run the migration in `supabase/migrations/20260525143000_create_waitlist_entries.sql`, then set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Vercel. The table is protected with Row Level Security and allows public inserts only.
