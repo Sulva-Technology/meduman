@@ -20,6 +20,7 @@ import { apiClient } from '../lib/api';
 import { normalizeUser, type ApiUser, type AppUser } from '../lib/types';
 import { cn } from '../lib/utils';
 import { GlassCard } from './ui/GlassCard';
+import { Button } from './ui/Button';
 
 export const UserContext = React.createContext<{
   user: AppUser | null;
@@ -67,7 +68,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         // Never fabricate an identity — a wrong role here would show the wrong
         // money. Surface the failure and let the user retry or sign out.
         console.error('Failed to load user profile:', err);
-        setLoadError(err instanceof Error ? err.message : 'Could not load your profile.');
+        setLoadError(err instanceof TypeError
+          ? 'We couldn’t connect to the account service. Please try again in a moment.'
+          : err instanceof Error ? err.message : 'Could not load your profile.');
       } finally {
         setLoading(false);
       }
@@ -97,23 +100,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   if (loadError || !user) {
     return (
       <div className="min-h-screen bg-canvas flex items-center justify-center p-4">
-        <GlassCard className="p-8 max-w-md text-center">
-          <AlertOctagon className="w-10 h-10 text-danger mx-auto mb-4" />
-          <h1 className="text-lg font-display font-bold text-ink mb-2">Couldn't load your account</h1>
-          <p className="text-sm text-muted mb-6">{loadError || 'Your profile is unavailable.'}</p>
-          <div className="flex gap-3 justify-center">
-            <button
+        <GlassCard role="alert" className="p-6 sm:p-8 w-full max-w-md text-center">
+          <div className="w-14 h-14 rounded-full bg-danger/10 flex items-center justify-center mx-auto mb-5">
+            <AlertOctagon aria-hidden="true" className="w-7 h-7 text-danger" />
+          </div>
+          <h1 className="text-xl font-display font-bold text-ink mb-3">Couldn't load your account</h1>
+          <p className="text-sm leading-relaxed text-muted mb-6">{loadError || 'Your profile is unavailable.'}</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 rounded-xl bg-brand text-white text-sm font-medium"
             >
               Try again
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="secondary"
               onClick={handleSignOut}
-              className="px-4 py-2 rounded-xl border border-line text-sm font-medium text-muted hover:text-ink"
             >
               Sign out
-            </button>
+            </Button>
           </div>
         </GlassCard>
       </div>

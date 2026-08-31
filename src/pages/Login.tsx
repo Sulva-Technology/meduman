@@ -46,15 +46,15 @@ export default function Login() {
           <h1 className="font-display text-4xl text-white font-bold leading-tight mb-4">
             Buy and sell online without fear.
           </h1>
-          <p className="text-muted text-lg max-w-md mb-12">
+          <p className="text-slate-300 text-lg max-w-md mb-12">
             Secure escrow protection for buyers, sellers, freelancers, and businesses trading through social channels.
           </p>
           <GlassCard className="p-6 inline-block bg-white/5 border-white/10 text-white">
             <div className="flex items-center gap-3 mb-2">
-              <Lock className="w-5 h-5 text-success" />
+              <Lock className="w-5 h-5 text-emerald-300" />
               <span className="font-medium">Funds Protected</span>
             </div>
-            <p className="text-sm text-muted">₦150,000 held safely until delivery.</p>
+            <p className="text-sm text-slate-300">₦150,000 held safely until delivery.</p>
           </GlassCard>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl border border-line bg-surface text-ink placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-line bg-surface text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -99,7 +99,7 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl border border-line bg-surface text-ink placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-line bg-surface text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
               </div>

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Keep utility variants and semantic tokens on the same explicit theme switch.
+   OS dark mode alone must not create dark surfaces with light-theme text. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-display: "Space Grotesk", "Plus Jakarta Sans", sans-serif;
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
@@ -26,28 +30,33 @@
 }
 
 :root {
+  color-scheme: light;
   --canvas: #F7F7F7;
   --canvas-ink: #081635;
   --surface: #FFFFFF;
   --brand: #232F72;
   --brand-700: #1B2559;
   --brand-050: #EEF0F7;
-  --ink: #0A0A0A;
-  --muted: #6B7280;
-  --line: #E7E8EE;
-  --success: #0E9E6E;
-  --success-600: #14B87F;
-  --warning: #E9A23B;
-  --danger: #EF4757;
+  --ink: #14213D;
+  --muted: #566176;
+  --line: #D8DEE8;
+  --success: #08734F;
+  --success-600: #066342;
+  --warning: #925809;
+  --danger: #C52C40;
   --info: #232F72;
 }
 
 .dark {
+  color-scheme: dark;
   --canvas: #081635; /* canvas-ink */
   --surface: #0C142C;
   --ink: #FFFFFF;
   --muted: #9CA3AF;
   --line: rgba(255, 255, 255, 0.1);
+  --success: #55D6A4;
+  --warning: #F5C568;
+  --danger: #FF8995;
 }
 
 body {
@@ -148,4 +157,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(35, 47, 114, 0.25);
 }
-
