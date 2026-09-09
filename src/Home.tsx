@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import MedumanPreloader from './components/MedumanPreloader';
 import {
   Shield,
@@ -91,7 +92,15 @@ const downloadLogo = (variant: MedumanLogoVariant, filename: string) => {
   document.body.removeChild(link);
 };
 
+// Same-origin helper served by server.ts (the local Express app that also
+// serves the built bundle). Deliberately NOT routed through API_BASE_URL /
+// VITE_API_BASE_URL — that points at the NestJS backend, which has no
+// send-waitlist-email route.
+const WAITLIST_EMAIL_URL = '/api/send-waitlist-email';
+
 export default function App() {
+  const navigate = useNavigate();
+
   // Navigation
   const [currentPage, setCurrentPage] = useState<'home' | 'how-it-works' | 'for-buyers' | 'for-sellers' | 'pricing' | 'security' | 'waitlist' | 'admin-waitlist' | 'brand-kit'>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -401,7 +410,7 @@ export default function App() {
 
       // Dispatch waitlist confirmation email
       try {
-        const mailResponse = await fetch('/api/send-waitlist-email', {
+        const mailResponse = await fetch(WAITLIST_EMAIL_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEntry)
@@ -491,7 +500,7 @@ export default function App() {
 
       // Dispatch waitlist confirmation email
       try {
-        const mailResponse = await fetch('/api/send-waitlist-email', {
+        const mailResponse = await fetch(WAITLIST_EMAIL_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEntry)
@@ -630,17 +639,29 @@ export default function App() {
 
           {/* Desktop Call to Action buttons */}
           <div className="hidden lg:flex items-center space-x-3">
-            <button 
+            <button
               onClick={() => setIsSimulatorOpen(true)}
               className="text-gray-600 hover:text-black hover:bg-gray-100 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 rounded-full transition-all"
             >
               Live Sandbox
             </button>
-            <button 
+            <button
+              onClick={() => navigate('/login')}
+              className="text-gray-600 hover:text-black hover:bg-gray-100 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 rounded-full transition-all"
+            >
+              Login
+            </button>
+            <button
               onClick={() => navigateTo('waitlist')}
-              className="bg-[#232F72] hover:bg-[#121358] text-white text-[10px] font-bold tracking-widest uppercase px-5 py-2.5 rounded-full shadow-md transition-all uppercase"
+              className="border border-[#232F72] text-[#232F72] hover:bg-[#232F72]/5 text-[10px] font-bold tracking-widest uppercase px-5 py-2.5 rounded-full transition-all"
             >
               Join Waitlist
+            </button>
+            <button
+              onClick={() => navigate('/signup')}
+              className="bg-[#232F72] hover:bg-[#121358] text-white text-[10px] font-bold tracking-widest uppercase px-5 py-2.5 rounded-full shadow-md transition-all"
+            >
+              Sign Up
             </button>
           </div>
 
@@ -701,13 +722,25 @@ export default function App() {
               </button> */}
             </div>
             <div className="flex flex-col gap-2 pt-2">
-              <button 
-                onClick={() => { setIsMobileMenuOpen(false); navigateTo('waitlist'); }}
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/login'); }}
+                className="w-full text-center py-3 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-gray-200 transition-all"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/signup'); }}
                 className="w-full text-center py-3 bg-[#232F72] text-white rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-[#121358] transition-all"
+              >
+                Sign Up
+              </button>
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); navigateTo('waitlist'); }}
+                className="w-full text-center py-3 border border-[#232F72] text-[#232F72] rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-[#232F72]/5 transition-all"
               >
                 Join Waitlist
               </button>
-              <button 
+              <button
                 onClick={() => { setIsMobileMenuOpen(false); setIsSimulatorOpen(true); }}
                 className="w-full text-center py-3 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-gray-200 transition-all"
               >

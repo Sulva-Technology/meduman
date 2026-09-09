@@ -5,7 +5,7 @@ import { Shield, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Button } from '../components/ui/Button';
 import { MoneyText } from '../components/ui/MoneyText';
-import { apiClient } from '../lib/api';
+import { apiClient, API_BASE_URL } from '../lib/api';
 import { supabase } from '../lib/supabase';
 import type { InitializePaymentResponse, PublicTransactionView } from '../lib/types';
 
@@ -25,9 +25,8 @@ export default function PayPage() {
     async function fetchTransaction() {
       try {
         // Public endpoint — no bearer token needed, so apiClient's 401 redirect
-        // would be wrong here. Use fetch directly against the same base.
-        const base = import.meta.env.VITE_API_BASE_URL || '/api';
-        const response = await fetch(`${base}/public/transactions/${publicLinkId}`);
+        // would be wrong here. Use fetch directly against the shared base.
+        const response = await fetch(`${API_BASE_URL}/public/transactions/${publicLinkId}`);
         if (response.status === 404) {
           setError('inactive');
           return;

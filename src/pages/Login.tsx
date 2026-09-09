@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Button } from '../components/ui/Button';
 import { AlertCircle, Lock } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +33,10 @@ export default function Login() {
     if (error) {
       setError(error.message);
     } else {
-      navigate('/app');
+      // Honor the return path set by protected pages (e.g. PayPage sends
+      // /login?next=/pay/<id> so a buyer lands back on their link).
+      const params = new URLSearchParams(location.search);
+      navigate(params.get('next') || '/app');
     }
   };
 

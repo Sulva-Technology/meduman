@@ -1,8 +1,37 @@
 import { supabase } from './supabase';
 
-// Defaults to the dev-server proxy at /api, which forwards to the NestJS API.
-// In production set VITE_API_BASE_URL to the deployed API origin.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Single source of truth for the API origin. Every backend call must resolve
+// through here (apiClient, or a raw fetch importing API_BASE_URL) — nothing may
+// hardcode a base URL of its own.
+//
+// Dev: blank VITE_API_BASE_URL → the Vite dev proxy at `/api`, which strips the
+// prefix and forwards to the NestJS backend (see vite.config.ts). The dev proxy
+// does NOT exist in production, so a misconfigured VITE_API_BASE_URL turns
+// every request into a silent 404 — fail fast at boot instead.
+const envApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+if (import.meta.env.PROD) {
+  const trimmed = (envApiBaseUrl ?? '').trim();
+  if (!trimmed) {
+    throw new Error(
+      '[Meduman] VITE_API_BASE_URL is missing in production. Set it to the bare ' +
+      'backend origin (no /api suffix, no trailing slash), e.g. https://meduman-api.onrender.com'
+    );
+  }
+  if (/\/api\/?$/.test(trimmed)) {
+    throw new Error(
+      `[Meduman] VITE_API_BASE_URL must NOT end in "/api" — the NestJS backend ` +
+      `mounts every route at the root, so a /api suffix 404s all requests. Got: ${trimmed}`
+    );
+  }
+  if (/\/$/.test(trimmed)) {
+    throw new Error(
+      `[Meduman] VITE_API_BASE_URL must have no trailing slash. Got: ${trimmed}`
+    );
+  }
+}
+
+export const API_BASE_URL = envApiBaseUrl || '/api';
 
 export class ApiError extends Error {
   status: number;
@@ -23,10 +52,16 @@ export interface ApiRequestOptions extends RequestInit {
    * case for these routes, not a session problem.
    */
   publicRoute?: boolean;
+  /**
+   * Caller handles 401 itself (throws ApiError instead of hard-redirecting to
+   * /login). Use in AppShell's /users/me load so a rejected session surfaces as
+   * a visible error card rather than a silent bounce that looks like login failed.
+   */
+  skipAuthRedirect?: boolean;
 }
 
 export async function apiClient<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { publicRoute = false, ...init } = options;
+  const { publicRoute = false, skipAuthRedirect = false, ...init } = options;
   const headers = new Headers(init.headers || {});
 
   if (supabase && !publicRoute) {
@@ -43,7 +78,7 @@ export async function apiClient<T>(endpoint: string, options: ApiRequestOptions 
     headers,
   });
 
-  if (response.status === 401 && !publicRoute) {
+  if (response.status === 401 && !publicRoute && !skipAuthRedirect) {
     if (window.location.pathname !== '/login') {
       window.location.href = '/login';
     }

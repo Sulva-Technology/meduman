@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { apiClient } from '../lib/api';
+import { apiClient, ApiError } from '../lib/api';
 import { normalizeUser, type ApiUser, type AppUser } from '../lib/types';
 import { cn } from '../lib/utils';
 import { GlassCard } from './ui/GlassCard';
@@ -59,7 +59,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }
 
       try {
-        const apiUser = await apiClient<ApiUser>('/users/me');
+        // skipAuthRedirect: a 401 here (backend rejecting the Supabase JWT) must
+        // surface as an error card, not a silent hard-redirect to /login — the
+        // bounce looks exactly like "login failed" and hides the real cause.
+        const apiUser = await apiClient<ApiUser>(‘/users/me’, { skipAuthRedirect: true });
         // app_metadata is server-controlled and cannot be edited by the user,
         // so it is safe to read the admin flag from the decoded session claims.
         const appRole = (session.user.app_metadata as { role?: string } | undefined)?.role;
@@ -67,10 +70,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       } catch (err) {
         // Never fabricate an identity — a wrong role here would show the wrong
         // money. Surface the failure and let the user retry or sign out.
-        console.error('Failed to load user profile:', err);
-        setLoadError(err instanceof TypeError
-          ? 'We couldn’t connect to the account service. Please try again in a moment.'
-          : err instanceof Error ? err.message : 'Could not load your profile.');
+        console.error(‘Failed to load user profile:’, err);
+        const rejectedSession = err instanceof ApiError && err.status === 401;
+        setLoadError(rejectedSession
+          ? ‘Your session was rejected by the server (401). Please sign out and try again.’
+          : err instanceof TypeError
+            ? ‘We couldn’t connect to the account service. Please try again in a moment.’
+            : err instanceof Error ? err.message : ‘Could not load your profile.’);
       } finally {
         setLoading(false);
       }

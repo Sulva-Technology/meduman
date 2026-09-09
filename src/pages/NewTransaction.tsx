@@ -6,6 +6,7 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { Button } from '../components/ui/Button';
 import { MoneyText } from '../components/ui/MoneyText';
 import { apiClient } from '../lib/api';
+import { APP_URL } from '../lib/app';
 import type { Transaction } from '../lib/types';
 
 export default function NewTransaction() {
@@ -262,15 +263,15 @@ export default function NewTransaction() {
 
               <div className="flex items-center gap-2 p-1.5 pl-4 bg-surface border border-line rounded-full mb-8">
                 <div className="flex-1 text-sm font-medium truncate text-left text-ink">
-                  meduman.com/pay/{publishedData.publicLinkId}
+                  {APP_URL}/pay/{publishedData.publicLinkId}
                 </div>
-                <Button size="sm" className="rounded-full shrink-0 h-9" onClick={() => navigator.clipboard.writeText(`https://meduman.com/pay/${publishedData.publicLinkId}`)}>
+                <Button size="sm" className="rounded-full shrink-0 h-9" onClick={() => navigator.clipboard.writeText(`${APP_URL}/pay/${publishedData.publicLinkId}`)}>
                   <Copy className="w-4 h-4 mr-1.5" /> Copy
                 </Button>
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button variant="secondary" className="w-full" onClick={() => window.open(`https://wa.me/?text=Pay securely for ${title}: https://meduman.com/pay/${publishedData.publicLinkId}`)}>
+                <Button variant="secondary" className="w-full" onClick={() => window.open(`https://wa.me/?text=Pay securely for ${title}: ${APP_URL}/pay/${publishedData.publicLinkId}`)}>
                   <Share2 className="w-4 h-4 mr-2" /> Share to WhatsApp
                 </Button>
                 <Button variant="ghost" className="w-full" onClick={() => navigate(`/app/transactions/${publishedData.id}`)}>

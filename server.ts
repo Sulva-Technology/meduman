@@ -53,6 +53,10 @@ const smtpTransporter = smtpHost
     })
   : null;
 
+// Public site URL used in the email CTA. Override with SITE_URL for a preview
+// origin; production defaults to the canonical domain.
+const siteUrl = (process.env.SITE_URL || 'https://meduman.sulvatech.com').replace(/\/+$/, '');
+
 // Email sending endpoint
 app.post('/api/send-waitlist-email', async (req, res) => {
   const { email, fullName, userType, id } = req.body;
@@ -216,7 +220,7 @@ app.post('/api/send-waitlist-email', async (req, res) => {
         <p>We will contact you as soon as the next cohort opens up for early beta trials and sandboxed transaction runs in your region.</p>
         
         <div class="cta-container">
-          <a href="https://meduman.sulvatech.com" class="cta-button" target="_blank">Visit Meduman Portal</a>
+          <a href="${siteUrl}" class="cta-button" target="_blank">Visit Meduman Portal</a>
         </div>
       </div>
       <div class="footer">

@@ -39,13 +39,13 @@ If neither `RESEND_API_KEY` nor `SMTP_HOST` is defined, the backend will operate
 
 To start the API server locally:
 ```bash
-# Starts the backend Express server on port 3001
+# Starts the backend Express server on port 3000 (see .env.example, PORT=3000)
 npm run server
 ```
 
 To run the Vite client:
 ```bash
-# Starts Vite on port 3000 (proxies /api to port 3001)
+# Starts Vite on port 3001 (proxies /api to port 3000)
 npm run dev
 ```
 
@@ -54,6 +54,17 @@ You can run both concurrently in separate terminal windows, or configure a task 
 ---
 
 ## 3. Production Deployment
+
+> **Where this endpoint lives.** `/api/send-waitlist-email` is served by THIS
+> Express app (`server.ts`) on the **same origin as the frontend bundle** — it is
+> NOT a NestJS route and must NOT be routed through `VITE_API_BASE_URL` (which
+> points at the NestJS backend). That is why the frontend calls it as a relative
+> path. In production the Express server must be reachable at the frontend's own
+> origin: either run `server.ts` (it serves the built `dist/` + this endpoint on
+> one port), or host this route on a serverless function at the same path. On a
+> pure-static Vercel deploy with no such function, this endpoint 404s and the
+> waitlist email silently falls back to console-warning (the waitlist row still
+> saves to Supabase).
 
 When compiling for production:
 1. Run `npm run build` to build the React frontend.

@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button';
 import { StatusPill } from '../components/ui/StatusPill';
 import { MoneyText } from '../components/ui/MoneyText';
 import { apiClient } from '../lib/api';
+import { APP_URL } from '../lib/app';
 import type { Transaction, TimelineEvent, Dispute, PayoutView } from '../lib/types';
 import { UserContext } from '../components/AppShell';
 import { cn } from '../lib/utils';
@@ -414,7 +415,7 @@ export default function TransactionDetail() {
                   <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-3">Payment Link</h3>
                   <div className="flex items-center gap-2 p-1.5 pl-4 bg-surface border border-line rounded-xl">
                     <div className="flex-1 text-sm font-medium truncate text-ink">
-                      meduman.com/pay/{transaction.publicLinkId}
+                      {APP_URL}/pay/{transaction.publicLinkId}
                     </div>
                     <Button size="sm" variant="secondary" className="rounded-lg h-9">
                       <Copy className="w-4 h-4" />
