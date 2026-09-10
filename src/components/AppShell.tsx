@@ -25,7 +25,34 @@ import { Button } from './ui/Button';
 export const UserContext = React.createContext<{
   user: AppUser | null;
   setUser: React.Dispatch<React.SetStateAction<AppUser | null>>;
-}>({ user: null, setUser: () => {} });
+  /**
+   * Re-read GET /users/me. Role flags are server-owned and can change mid-session
+   * (the backend grants SELLER when a first transaction is published), so a page
+   * that causes such a change asks the server again rather than writing the flag
+   * itself.
+   */
+  refreshUser: () => Promise<void>;
+}>({ user: null, setUser: () => {}, refreshUser: async () => {} });
+
+/**
+ * Read the caller's profile. Returns null when there is no session to read it
+ * with; throws when the request itself fails, leaving the caller to decide what
+ * that means. skipAuthRedirect is deliberate: a 401 here (the backend rejecting
+ * the Supabase JWT) must surface as a visible error card, not a silent bounce to
+ * /login that looks exactly like a login failure. `app_metadata` is
+ * server-controlled and cannot be edited by the user, so it is safe to read the
+ * admin flag from the decoded session claims.
+ */
+async function fetchAppUser(): Promise<AppUser | null> {
+  if (!supabase) return null;
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return null;
+
+  const apiUser = await apiClient<ApiUser>('/users/me', { skipAuthRedirect: true });
+  const appRole = (session.user.app_metadata as { role?: string } | undefined)?.role;
+  return normalizeUser(apiUser, appRole);
+}
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/app' },
@@ -45,38 +72,33 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Server-owned state can change mid-session; let pages that trigger such a
+  // change (publishing a first transaction grants SELLER) pull it in again.
+  const refreshUser = React.useCallback(async () => {
+    const refreshed = await fetchAppUser();
+    if (refreshed) setUser(refreshed);
+  }, []);
+
   useEffect(() => {
     async function loadUser() {
-      if (!supabase) {
-        navigate('/login');
-        return;
-      }
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/login');
-        return;
-      }
-
       try {
-        // skipAuthRedirect: a 401 here (backend rejecting the Supabase JWT) must
-        // surface as an error card, not a silent hard-redirect to /login — the
-        // bounce looks exactly like "login failed" and hides the real cause.
-        const apiUser = await apiClient<ApiUser>(‘/users/me’, { skipAuthRedirect: true });
-        // app_metadata is server-controlled and cannot be edited by the user,
-        // so it is safe to read the admin flag from the decoded session claims.
-        const appRole = (session.user.app_metadata as { role?: string } | undefined)?.role;
-        setUser(normalizeUser(apiUser, appRole));
+        const appUser = await fetchAppUser();
+        // No session at all — the visitor simply is not signed in.
+        if (!appUser) {
+          navigate('/login');
+          return;
+        }
+        setUser(appUser);
       } catch (err) {
         // Never fabricate an identity — a wrong role here would show the wrong
         // money. Surface the failure and let the user retry or sign out.
-        console.error(‘Failed to load user profile:’, err);
+        console.error('Failed to load user profile:', err);
         const rejectedSession = err instanceof ApiError && err.status === 401;
         setLoadError(rejectedSession
-          ? ‘Your session was rejected by the server (401). Please sign out and try again.’
+          ? 'Your session was rejected by the server (401). Please sign out and try again.'
           : err instanceof TypeError
-            ? ‘We couldn’t connect to the account service. Please try again in a moment.’
-            : err instanceof Error ? err.message : ‘Could not load your profile.’);
+            ? "We couldn't connect to the account service. Please try again in a moment."
+            : err instanceof Error ? err.message : 'Could not load your profile.');
       } finally {
         setLoading(false);
       }
@@ -136,7 +158,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, refreshUser }}>
       <div className="min-h-screen bg-canvas text-ink flex relative overflow-hidden">
         {/* Background Aurora */}
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">

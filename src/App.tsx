@@ -19,6 +19,7 @@ import Payouts from './pages/Payouts';
 import Invoices from './pages/Invoices';
 import NewInvoice from './pages/NewInvoice';
 import PublicInvoice from './pages/PublicInvoice';
+import PaymentVerify from './pages/PaymentVerify';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminTransactionDetail from './pages/AdminTransactionDetail';
 import AdminDisputes from './pages/AdminDisputes';
@@ -56,6 +57,13 @@ export default function App() {
         <Route path="/admin/disputes" element={<AppShell><RequireAdmin><AdminDisputes /></RequireAdmin></AppShell>} />
         
         <Route path="/" element={<Home />} />
+
+        {/* Paystack's callback_url sends the buyer's browser back here after
+            checkout. It must render OUTSIDE AppShell: the buyer is mid-flow on
+            their own pay link, and AppShell's /users/me guard would hijack the
+            page with a session error instead of confirming the payment. */}
+        <Route path="/payments/:reference/verify" element={<PaymentVerify />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

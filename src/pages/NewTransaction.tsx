@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ShieldCheck, Copy, Share2, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { Button } from '../components/ui/Button';
 import { MoneyText } from '../components/ui/MoneyText';
 import { apiClient } from '../lib/api';
+import { UserContext } from '../components/AppShell';
 import { APP_URL } from '../lib/app';
 import type { Transaction } from '../lib/types';
 
@@ -15,6 +16,7 @@ export default function NewTransaction() {
   const [error, setError] = useState<string | null>(null);
   const [publishedData, setPublishedData] = useState<{ id: string; publicLinkId: string; amount: number } | null>(null);
   const navigate = useNavigate();
+  const { refreshUser } = useContext(UserContext);
 
   // Form State
   const [title, setTitle] = useState('');
@@ -72,6 +74,16 @@ export default function NewTransaction() {
       });
       // 2. Publish it so the pay link is live (DRAFT -> LINK_ACTIVE).
       await apiClient<Transaction>(`/transactions/${tx.id}/publish`, { method: 'POST' });
+      // 3. Publishing is what grants the SELLER role server-side, and the dashboard
+      // renders its view off that flag — so re-read the profile now. roleFlags is
+      // server-owned; we refetch it, never write it.
+      try {
+        await refreshUser();
+      } catch (refreshErr) {
+        // The link is already live, so a stale role only mis-renders the dashboard
+        // until the next load. Don't fail a successful publish over it.
+        console.error('Failed to refresh the user profile:', refreshErr);
+      }
       setPublishedData({ id: tx.id, publicLinkId: tx.publicLinkId, amount: tx.amount });
       setStep(4); // Success step
     } catch (err) {

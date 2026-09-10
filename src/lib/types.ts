@@ -97,6 +97,19 @@ export interface InitializePaymentResponse {
   reference: string;
 }
 
+/** The server's view of a charge. The client never derives this itself. */
+export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
+
+/**
+ * `POST /payments/:reference/verify` — the server re-checks the charge with
+ * Paystack and returns the authoritative status. This is the ONLY signal a
+ * payment succeeded; the return-URL query string and the redirect itself prove
+ * nothing.
+ */
+export interface VerifyPaymentResponse {
+  status: PaymentStatus;
+}
+
 export interface TimelineEvent {
   id: string;
   transactionId: string;
